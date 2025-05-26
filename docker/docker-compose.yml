@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: flask-app
+    ports:
+      - "8080:5000"  
+    env_file:
+      - ./app/.env
+    environment:
+      - FLASK_CONTEXT=production
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+    depends_on:
+      - postgresql
+    networks:
+      - internal
+
+  postgresql:
+    container_name: postgresql-server
+    image: postgres:16.8-bullseye
+    env_file:
+      - ./db/.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - internal
+
+  pgadmin:
+    container_name: pgadmin-container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=gabriel98almonacid@hotmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    networks:
+      - internal
+
+  tests:
+    container_name: test-runner
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    env_file:
+      - ./app/.env
+    depends_on:
+      - postgresql
+    command: python -m unittest discover -s test  # Esto ejecutará todos los test dentro de test/
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
