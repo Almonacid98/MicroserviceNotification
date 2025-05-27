@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.11
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./traefik/config:/etc/traefik
+      - ./traefik/certs:/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  notification:
+    build: ./notification-microservice
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notification.rule=Host(`notifications.localhost`)"
+      - "traefik.http.routers.notification.entrypoints=http"
+      - "traefik.http.services.notification.loadbalancer.server.port=5000"
+    networks:
+      - web
+
+networks:
+  web:
+    external: false
