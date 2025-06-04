@@ -137,6 +137,7 @@ pyvenv.cfg
 ../.idea/
 //.vscode
 /migrations
+.vscode/
 
 # Docker database data
 docker/db/data/
