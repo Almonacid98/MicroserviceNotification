@@ -1,1 +1,1 @@
-from .notification_controller import NotificationController
+from .notification_controller import notification_bp
