@@ -1,0 +1,23 @@
+services:
+    notification:
+        image: notification-microservice-uwsgi:v1.0.0
+        networks:
+            mired:
+                aliases:
+                    - notification.universidad.localhost
+        environment:
+          - SQLALCHEMY_TRACK_MODIFICATIONS=${SQLALCHEMY_TRACK_MODIFICATIONS}
+          - SQLALCHEMY_RECORD_QUERIES=${SQLALCHEMY_RECORD_QUERIES}
+          - TEST_DATABASE_URI=${TEST_DATABASE_URI}
+          - DEV_DATABASE_URI=${DEV_DATABASE_URI}
+          - PROD_DATABASE_URI=${PROD_DATABASE_URI}
+          - FLASK_CONTEXT=${FLASK_CONTEXT}
+        labels:
+          - "traefik.enable=true"
+          - "traefik.http.services.notification.loadbalancer.server.port=5000"
+          - "traefik.http.routers.notification.rule=Host(`notification.universidad.localhost`)"
+          - "traefik.http.routers.notification.tls=true"
+          - "traefik.docker.network=mired"    
+networks:
+    mired:
+        external: true

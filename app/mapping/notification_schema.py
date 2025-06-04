@@ -1,7 +1,7 @@
 from app.models.notification import Notification
 from marshmallow import fields, Schema, post_load
 
-class NotificationSchema(Schema):
+class NotificationMap(Schema):
     id = fields.Integer(dump_only=True)
     type = fields.String(required=True)
     message = fields.String(required=True)
