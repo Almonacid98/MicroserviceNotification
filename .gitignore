@@ -143,3 +143,11 @@ pyvenv.cfg
 docker/db/data/
 
 activate_venv.ps1
+
+#Boot install Windows
+/boot.ps1
+/install.ps1
+
+#Boot install Linux
+/boot.sh
+/install.sh
