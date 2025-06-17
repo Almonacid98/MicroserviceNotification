@@ -4,8 +4,9 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from app.config import config
 from app.routes import Route
+from flask_marshmallow import Marshmallow
 
-
+marshmallow = Marshmallow()
 db = SQLAlchemy()
 migrate = Migrate()
 
@@ -14,6 +15,7 @@ def create_app() -> Flask:
     app = Flask(__name__)
     f = config.factory(app_context if app_context else 'development')
     app.config.from_object(f)
+    marshmallow.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
 

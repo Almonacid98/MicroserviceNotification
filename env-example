@@ -5,7 +5,4 @@ DEV_DATABASE_URI="postgresql://usuario:Password@localhost:5432/DEV_STOCK"
 PROD_DATABASE_URI="postgresql://usuario:Password@localhost:5432/PROD_STOCK"
 FLASK_CONTEXT="production"
 
-#.env-migrations (archivo env.py modificación para conexion en base de datos).
-linea 5: from app import db, metadata (pegar esto)
-linea 39: target_metadata = db.metadata (pegar esto)
-Esto permite la conexion y migracion de tablas
+#FLASK_CONTEXT con comillas en windows, sin comillas en linux
