@@ -21,7 +21,8 @@ RUN mkdir app
 COPY ./app ./app
 COPY ./app.py .
 COPY ./uwsgi.ini .
-
+COPY .env .env
+ 
 ADD requirements.txt ./requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
