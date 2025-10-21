@@ -20,7 +20,7 @@ jobs:
     - name: 'Run CodeQL Analysis'
       uses: github/codeql-action/init@v3
       with:
-        languages: 'python,go'
+        languages: 'python'
     - uses: github/codeql-action/analyze@v3
 
   truffleHog:
