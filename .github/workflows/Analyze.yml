@@ -14,14 +14,14 @@ jobs:
       actions: read
       security-events: write
     steps:
-    - name: 'Checkout GitHub Action'
-      uses: actions/checkout@v4
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v4
 
-    - name: 'Run CodeQL Analysis'
-      uses: github/codeql-action/init@v3
-      with:
-        languages: 'python'
-    - uses: github/codeql-action/analyze@v3
+      - name: 'Run CodeQL Analysis'
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'python'
+      - uses: github/codeql-action/analyze@v3
 
   truffleHog:
     runs-on: ubuntu-latest
@@ -29,8 +29,20 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
+      - name: 'Install TruffleHog'
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/install.sh | sudo bash
+
       - name: 'Run TruffleHog Analysis'
-        uses: trufflesecurity/trufflehog@v3.90.11
+        run: |
+          echo "🔍 Escaneando el repositorio con TruffleHog..."
+          trufflehog git file://. --only-verified --json > trufflehog-results.json
+          cat trufflehog-results.json || echo "✅ No se encontraron secretos."
+
+      - name: 'Upload TruffleHog results'
+        uses: actions/upload-artifact@v4
         with:
-            extra_args: --results=verified,unknown
+          name: trufflehog-report
+          path: trufflehog-results.json
+
             

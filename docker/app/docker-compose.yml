@@ -1,9 +1,8 @@
 services:
   notification:
-    build:
-      context: ../..
-      dockerfile: Dockerfile
     image: notification-microservice-uwsgi:v1.0.0
+    deploy:
+            replicas: 2
     networks:
       mired:
         aliases:
