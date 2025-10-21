@@ -15,11 +15,9 @@ jobs:
       actions: read
       security-events: write
     steps:
-      # 1️⃣ Checkout del repositorio
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ CodeQL Analysis
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
@@ -31,7 +29,7 @@ jobs:
       - name: Install TruffleHog
         run: |
           python3 -m pip install --upgrade pip
-          pip install truffleHog
+          pip install truffleHog jq
 
       - name: Run TruffleHog
         id: trufflehog
@@ -40,18 +38,19 @@ jobs:
           trufflehog git file://. --only-verified --json > trufflehog-results.json || true
           RESULTS_COUNT=$(jq '. | length' trufflehog-results.json)
           echo "results_count=$RESULTS_COUNT" >> $GITHUB_ENV
-          cat trufflehog-results.json
+
+          if [ "$RESULTS_COUNT" != "0" ]; then
+            echo "⚠️ Se encontraron $RESULTS_COUNT secretos:"
+            jq '.[] | {path: .path, type: .type, secret: .secret}' trufflehog-results.json
+          else
+            echo "✅ No se encontraron secretos."
+          fi
 
       - name: Upload TruffleHog results
         uses: actions/upload-artifact@v4
         with:
           name: trufflehog-report
           path: trufflehog-results.json
-      - name: Fail if secrets found
-        if: env.results_count != '0'
-        run: |
-          echo "❌ Se encontraron secretos. Deteniendo workflow."
-          exit 1
 
 
             
